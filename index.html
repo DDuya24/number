@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숫자 추측 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            transition: background 0.5s ease;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+        h1 {
+            animation: fadeIn 1s ease-in-out, slideDown 1s ease-in-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            animation: buttonPulse 2s infinite;
+        }
+        @keyframes buttonPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0px rgba(0, 123, 255, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 123, 255, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 0 0px rgba(0, 123, 255, 0.5); }
+        }
+        button:hover {
+            transform: scale(1.1);
+        }
+        p#result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #resetButton {
+            display: none;
+            margin-top: 10px;
+            background-color: #28a745;
+            animation: bounceIn 0.5s ease-in-out;
+        }
+        #resetButton.show {
+            display: inline-block;
+            animation: bounceIn 0.5s ease-in-out;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>숫자 추측 게임</h1>
+    <p>1부터 100 사이의 숫자를 맞춰보세요!</p>
+    <input type="number" id="guessInput" placeholder="숫자를 입력하세요" />
+    <button id="guessButton">추측하기</button>
+    <p id="result"></p>
+    <button id="resetButton">다시 하기</button>
+
+    <script>
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        const guessButton = document.getElementById('guessButton');
+        const resetButton = document.getElementById('resetButton');
+        const guessInput = document.getElementById('guessInput');
+        const result = document.getElementById('result');
+        const body = document.body;
+
+        guessButton.addEventListener('click', function() {
+            const userGuess = parseInt(guessInput.value);
+
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                result.textContent = "1과 100 사이의 숫자를 입력하세요.";
+                result.style.color = "orange";
+            } else if (userGuess < randomNumber) {
+                result.textContent = "너무 낮습니다! (더 높은 숫자를 고르세요)";
+                result.style.color = "blue";
+                body.style.background = "linear-gradient(135deg, #dceefc, #f0f4f8)";
+            } else if (userGuess > randomNumber) {
+                result.textContent = "너무 높습니다! (더 낮은 숫자를 고르세요)";
+                result.style.color = "red";
+                body.style.background = "linear-gradient(135deg, #fbd3d3, #f7e4e4)";
+            } else {
+                result.textContent = "축하합니다! 숫자를 맞추셨습니다!";
+                result.style.color = "green";
+                body.style.background = "linear-gradient(135deg, #e2f7e2, #f0fff0)";
+                resetButton.classList.add('show');
+                guessButton.disabled = true;
+                guessInput.disabled = true;
+            }
+
+            result.style.opacity = 1;
+        });
+
+        resetButton.addEventListener('click', function() {
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+            guessInput.value = '';
+            result.textContent = '';
+            result.style.opacity = 0;
+            body.style.background = "linear-gradient(135deg, #f5f7fa, #c3cfe2)";
+            resetButton.classList.remove('show');
+            guessButton.disabled = false;
+            guessInput.disabled = false;
+            guessInput.focus();
+        });
+    </script>
+
+</body>
+</html>
